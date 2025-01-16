@@ -7,7 +7,7 @@ import io
 import os  # Fix: Import os for setting port
 
 app = Flask(__name__)
-CORS(app, resources={r"/*": {"origins": "*"}})
+CORS(app, resources={r"/*": {"origins": "https://beautiful-starlight-f633f5.netlify.app/"}})
 # Load your trained model
 MODEL_PATH = "fish_disease_classifier.h5"
 try:
