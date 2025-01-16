@@ -4,23 +4,17 @@ from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing.image import img_to_array, load_img
 import numpy as np
 import io
-import os
+import os  # Fix: Import os for setting port
 
 app = Flask(__name__)
-
-# Allow only the frontend URL to make requests
-CORS(app, resources={r"/*": {"origins": "https://beautiful-starlight-f633f5.netlify.app"}})
-
-# Load your trained model (ensure the path is correct)
-MODEL_PATH = os.path.join(os.getcwd(), "fish_disease_classifier.h5")
-
-# Try loading the model, and if it fails, log the error and stop the server
+CORS(app)
+# Load your trained model
+MODEL_PATH = "fish_disease_classifier.h5"
 try:
     model = load_model(MODEL_PATH)
     print("Model loaded successfully.")
 except Exception as e:
     print(f"Error loading model: {e}")
-    exit(1)  # Exit the server if the model is not loaded
 
 # Model input dimensions and class names
 IMG_HEIGHT = 150
@@ -35,12 +29,14 @@ CLASS_NAMES = [
     "Viral diseases with tail disease"
 ]
 
+
 @app.route("/", methods=["GET"])
 def index():
     """
     Default route for the backend API.
     """
     return jsonify({"message": "Welcome to the Fish Disease Prediction API."})
+
 
 @app.route("/predict", methods=["POST"])
 def predict():
@@ -83,7 +79,7 @@ def predict():
         print(f"An error occurred: {e}")
         return jsonify({"error": f"An error occurred: {str(e)}"}), 500
 
+
 if __name__ == "__main__":
-    # The port will be set dynamically by Render
     port = int(os.environ.get("PORT", 5000))
     app.run(debug=True, host="0.0.0.0", port=port)
